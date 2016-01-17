@@ -1,54 +1,43 @@
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
-public class WordCount extends HashFold1<String, String, Integer> {
+public class WordCount extends HashFold<String, String, Integer> {
     public static void main(String[] args) {
         WordCount wordCount = new WordCount();
         List<String> inputs = Arrays.asList(args);
-        Map<String, Integer> h = wordCount.start(inputs);
+        Map<String, Integer> hash = wordCount.start(inputs);
+        hash.entrySet().stream().sorted((e1, e2) -> e2.getValue() - e1.getValue()).limit(20).forEach(e -> System.out.format("%d: %s%n", e.getValue(), e.getKey()));
     }
 
     public final Set<String> stopWords;
+    public final String delimiter;
 
     public WordCount() {
         stopWords =  new HashSet<>(Arrays.asList("a", "an", "and", "are", "as", "be", "for", "if", "in", "is", "it", "of", "or", "the", "to", "with"));
-    }
-
-    public class MapIterator implements Iterator<Map.Entry<String,Integer>> {
-
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
-
-        @Override
-        public Map.Entry<String, Integer> next() {
-            return null;
-        }
+        delimiter = "!#\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~ ";
     }
 
     @Override
-    public Map<String, Integer> map(String source) {
-        Map<String, Integer> hashmap = new HashMap<>();
-        Path path = FileSystems.getDefault().getPath(source);
-        try(BufferedReader reader = Files.newBufferedReader(path)) {
+    public void map(String source, Context<String,String,Integer> context) {
+        Path path = Paths.get(source);
+        try (BufferedReader reader = Files.newBufferedReader(path)) {
             String line;
-            while((line = reader.readLine()) != null) {
-                for (String word : line.split("[!#$]")) {
-                    word = word.toLowerCase();
-                    hashmap.merge(word, 1, (v1, v2) -> v1 + v2);
+            while ((line = reader.readLine()) != null) {
+                StringTokenizer tokenizer = new StringTokenizer(line, delimiter);
+                while (tokenizer.hasMoreTokens()) {
+                    String token = tokenizer.nextToken();
+                    token = token.toLowerCase();
+                    if (!stopWords.contains(token)) {
+                        context.write(token, 1);
+                    }
                 }
             }
-            return hashmap;
         } catch (IOException e) {
-            System.err.println(e);
-            return null;
+            e.printStackTrace();
         }
     }
 
