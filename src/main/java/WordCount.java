@@ -4,7 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.StreamSupport;
 
 public class WordCount extends HashFold<String, String, Integer> {
     public static void main(String[] args) throws InterruptedException {
