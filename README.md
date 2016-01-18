@@ -1,8 +1,12 @@
 # My-HashFold
 
-WordCount in HashFold.
+WordCount in HashFold algorithm.
 
-HashFold is alternative algorithm to MapReduce. This is my sample program of HashFold usages in WordCount.
+HashFold is alternative algorithm to MapReduce (maybe). This is my sample program of HashFold usages in WordCount.
+
+## Reference
+
+`まつもとゆきひろ コードの未来`
 
 ## Build
 
