@@ -1,9 +1,6 @@
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public abstract class HashFold<S,K,V> {
     public static class Context<S,K,V> {
@@ -28,12 +25,14 @@ public abstract class HashFold<S,K,V> {
         executor = Executors.newCachedThreadPool();
     }
 
-    public Map<K,V> start(Collection<S> inputs) {
+    public Map<K,V> start(Collection<S> inputs) throws InterruptedException {
         ConcurrentMap<K,V> hashMap = new ConcurrentHashMap<>();
         Context<S,K,V> context = new Context<>(this, hashMap);
         for(S input: inputs) {
             executor.submit(() -> map(input, context));
         }
+        executor.shutdown();
+        executor.awaitTermination(1, TimeUnit.HOURS);
         return hashMap;
     }
 

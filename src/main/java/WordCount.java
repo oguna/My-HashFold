@@ -4,9 +4,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 public class WordCount extends HashFold<String, String, Integer> {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         WordCount wordCount = new WordCount();
         List<String> inputs = Arrays.asList(args);
         Map<String, Integer> hash = wordCount.start(inputs);
@@ -18,7 +19,7 @@ public class WordCount extends HashFold<String, String, Integer> {
 
     public WordCount() {
         stopWords =  new HashSet<>(Arrays.asList("a", "an", "and", "are", "as", "be", "for", "if", "in", "is", "it", "of", "or", "the", "to", "with"));
-        delimiter = "!#\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~ ";
+        delimiter = "!#\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~ \r\t";
     }
 
     @Override
