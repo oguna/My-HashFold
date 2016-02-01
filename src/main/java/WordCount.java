@@ -22,7 +22,7 @@ public class WordCount extends HashFold<String, String, Integer> {
     }
 
     @Override
-    public void map(String source, Context<String,String,Integer> context) {
+    public void map(String source, Context<String,Integer> context) {
         Path path = Paths.get(source);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String line;
